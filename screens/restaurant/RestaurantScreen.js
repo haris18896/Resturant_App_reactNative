@@ -1,25 +1,43 @@
-import React, { useLayoutEffect, useEffect } from 'react'
-import { urlFor } from '../../sanity'
-import * as Icons from 'react-native-heroicons/solid'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import DishRow from '../../components/dishRow/DishRow'
-import BasketIcon from '../../components/basketIcon/BasketIcon'
-import { useDispatch } from 'react-redux'
-import { setRestaurant } from '../../redux/features/restaurantSlice'
+import React, { useLayoutEffect, useEffect } from "react";
+import { urlFor } from "../../sanity";
+import * as Icons from "react-native-heroicons/solid";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
+import DishRow from "../../components/dishRow/DishRow";
+import BasketIcon from "../../components/basketIcon/BasketIcon";
+import { useDispatch } from "react-redux";
+import { setRestaurant } from "../../redux/features/restaurantSlice";
 
 const RestaurantScreen = () => {
-  const navigation = useNavigation()
-  const dispatch = useDispatch()
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {
-    params: { id, imgUrl, rating, title, genre, address, short_description, dishes, long, lat },
-  } = useRoute()
+    params: {
+      id,
+      imgUrl,
+      rating,
+      title,
+      genre,
+      address,
+      short_description,
+      dishes,
+      long,
+      lat,
+    },
+  } = useRoute();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
-    })
-  }, [])
+    });
+  }, []);
 
   useEffect(() => {
     dispatch(
@@ -34,58 +52,65 @@ const RestaurantScreen = () => {
         dishes,
         long,
         lat,
-      })
-    )
-  }, [])
+      }),
+    );
+  }, []);
 
   return (
     <>
       <BasketIcon />
-      <ScrollView>
-        <View className='relative'>
-          <Image
-            source={{
-              uri: urlFor(imgUrl).url(),
-            }}
-            className='w-full h-56 bg-gray-300 p-4'
-          />
+      <ScrollView style={styles.container}>
+        <View>
+          <Image source={{ uri: urlFor(imgUrl).url() }} style={styles.image} />
 
-          <TouchableOpacity onPress={navigation.goBack} className='absolute top-14 left-5 p-2 bg-gray-100 rounded-full'>
-            <Icons.ArrowLeftIcon size={20} color='#00ccbb' />
+          <TouchableOpacity
+            onPress={navigation.goBack}
+            style={styles.backButton}
+          >
+            <Icons.ArrowLeftIcon size={20} color="#00ccbb" />
           </TouchableOpacity>
         </View>
 
-        <View className='bg-white'>
-          <View className='px-4 pt-4'>
-            <Text className='text-3x font-bold'>{title}</Text>
-            <View className='flex-row space-x-2 my-1'>
-              <View className='flex-row items-center space-x-1'>
-                <Icons.StarIcon size={20} color='green' opacity={0.5} />
-                <Text className='text-xs text-gray-500'>
-                  <Text className='text-green-500'>{rating}</Text> . {genre}
+        <View style={{ backgroundColor: "#FFF" }}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+            <Text style={styles.title}>{title}</Text>
+
+            <View style={styles.ratingGenreContainer}>
+              <View style={styles.ratingView}>
+                <Icons.StarIcon size={20} color="green" opacity={0.5} />
+                <Text style={styles.ratingGenreText}>
+                  <Text style={{ color: "green" }}>{rating}</Text> . {genre}
                 </Text>
               </View>
-              <View className='flex-row items-center space-x-1'>
-                <Icons.LocationMarkerIcon size={20} color='gray' opacity={0.4} />
-                <Text className='text-xs text-gray-500'>{address}</Text>
+              <View style={styles.ratingView}>
+                <Icons.LocationMarkerIcon
+                  size={20}
+                  color="gray"
+                  opacity={0.4}
+                />
+                <Text style={styles.ratingGenreText}>{address}</Text>
               </View>
             </View>
 
-            <Text className='text-gray-500 mt-2 pb-4'>{short_description}</Text>
+            <Text style={styles.descriptionText}>{short_description}</Text>
           </View>
 
-          <TouchableOpacity className='flex-row items-center space-x-2 p-4 border-y border-gray-100'>
-            <Icons.QuestionMarkCircleIcon color='gray' size={20} opacity={0.6} />
-            <Text className='pl-2 flex-1 text-md font-bold'>Have a food allergy?</Text>
-            <Icons.ChevronRightIcon size={20} color='#00ccbb' />
+          <TouchableOpacity style={styles.allergyContainer}>
+            <Icons.QuestionMarkCircleIcon
+              color="gray"
+              size={20}
+              opacity={0.6}
+            />
+            <Text style={styles.allergyText}>Have a food allergy?</Text>
+            <Icons.ChevronRightIcon size={20} color="#00ccbb" />
           </TouchableOpacity>
         </View>
 
-        <View className='pb-36'>
-          <Text className='pt-6 font-bold px-4 mb-3 text-xl'>Menu</Text>
+        <View style={{ paddingBottom: 180 }}>
+          <Text style={styles.menu}>Menu</Text>
 
           {/* Dishes */}
-          {dishes.map(dish => (
+          {dishes.map((dish) => (
             <DishRow
               key={dish?._id}
               id={dish?._id}
@@ -98,7 +123,65 @@ const RestaurantScreen = () => {
         </View>
       </ScrollView>
     </>
-  )
-}
+  );
+};
 
-export default RestaurantScreen
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#fff",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    backgroundColor: "#D1D5DB",
+    padding: 16,
+  },
+  backButton: {
+    position: "absolute",
+    top: 34,
+    left: 10,
+    padding: 8,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 999,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  ratingGenreContainer: {
+    flexDirection: "column",
+    marginVertical: 8,
+  },
+  ratingView: { flexDirection: "row", alignItems: "center", marginRight: 8 },
+  ratingGenreText: {
+    fontSize: 14,
+    color: "#374151",
+    marginLeft: 5,
+  },
+  menu: {
+    paddingTop: 12,
+    paddingHorizontal: 16,
+    fontSize: 20,
+    fontWeight: "bold",
+    backgroundColor: "#fff",
+  },
+  descriptionText: {
+    color: "#9CA3AF",
+    marginBottom: 16,
+  },
+  allergyContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  allergyText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#374151",
+  },
+});
+
+export default RestaurantScreen;

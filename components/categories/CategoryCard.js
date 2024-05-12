@@ -1,13 +1,33 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, Image } from "react-native";
+import React from "react";
 
 const CategoryCard = ({ imgUrl, title }) => {
   return (
-    <TouchableOpacity className='relative mr-2'>
-      <Image source={{ uri: imgUrl }} className='h-20 w-20 rounded-md' />
-      <Text className='absolute bottom-1 left-1 text-white font-bold'>{title}</Text>
+    <TouchableOpacity style={styles.categoryContainer}>
+      <Image source={{ uri: imgUrl }} style={styles.categoryImage} />
+      <Text style={styles.categoryText}>{title}</Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default CategoryCard
+const styles = StyleSheet.create({
+  categoryContainer: {
+    marginRight: 10,
+    position: "relative",
+  },
+  categoryImage: {
+    height: 80,
+    width: 80,
+    borderRadius: 20,
+  },
+  categoryText: {
+    position: "absolute",
+    bottom: 10,
+    left: 5,
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+});
+
+export default CategoryCard;

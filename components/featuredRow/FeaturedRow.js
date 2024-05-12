@@ -1,44 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
-import RestaurantCard from '../restaurantCard/RestaurantCard';
-import sanityClient from '../../sanity';
-import { useNavigation } from '@react-navigation/native';
-import * as Icons from 'react-native-heroicons/solid';
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 4,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-  },
-  header: {
-
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 4,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  description: {
-    fontSize: 12,
-    color: '#888',
-    paddingHorizontal: 4,
-  },
-  scrollView: {
-    paddingTop: 4,
-    paddingHorizontal: 15,
-    backgroundColor: '#fff'
-  },
-  loadingContainer: {
-    flex: 1,
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import RestaurantCard from "../restaurantCard/RestaurantCard";
+import sanityClient from "../../sanity";
+import { useNavigation } from "@react-navigation/native";
+import * as Icons from "react-native-heroicons/solid";
 
 const FeaturedRow = ({ id, title, description }) => {
   const [loading, setLoading] = useState(false);
@@ -61,9 +32,9 @@ const FeaturedRow = ({ id, title, description }) => {
           }
         }[0]
     `,
-        { id } // params
+        { id }, // params
       )
-      .then(data => {
+      .then((data) => {
         setRestaurants(data?.restaurant);
         setLoading(false);
       });
@@ -73,7 +44,7 @@ const FeaturedRow = ({ id, title, description }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        <Icons.ArrowRightIcon size={20} color='#00ccbb' />
+        <Icons.ArrowRightIcon size={20} color="#00ccbb" />
       </View>
       <Text style={styles.description}>{description}</Text>
 
@@ -85,10 +56,10 @@ const FeaturedRow = ({ id, title, description }) => {
         {/* Restaurant Card.... */}
         {loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size='large' color='#00ccbb' />
+            <ActivityIndicator size="large" color="#00ccbb" />
           </View>
         ) : (
-          restaurants?.map(restaurant => (
+          restaurants?.map((restaurant) => (
             <RestaurantCard
               key={restaurant?._id}
               id={restaurant?._id}
@@ -108,5 +79,39 @@ const FeaturedRow = ({ id, title, description }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 4,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 4,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  description: {
+    fontSize: 12,
+    color: "#888",
+    paddingHorizontal: 4,
+  },
+  scrollView: {
+    paddingTop: 4,
+    paddingHorizontal: 15,
+    backgroundColor: "#fff",
+  },
+  loadingContainer: {
+    flex: 1,
+    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default FeaturedRow;

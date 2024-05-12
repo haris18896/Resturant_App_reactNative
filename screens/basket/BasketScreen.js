@@ -1,131 +1,236 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React, { useMemo, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectRestaurant } from '../../redux/features/restaurantSlice'
-import { selectBasketItems, selectBasketTotal } from '../../redux/features/basketSlice'
-import * as Icons from 'react-native-heroicons/solid'
-import { urlFor } from '../../sanity'
-import CurrencyFormat from 'react-currency-format'
-import { removeFromBasket } from '../../redux/features/basketSlice'
+import React, { useMemo, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { selectRestaurant } from "../../redux/features/restaurantSlice";
+import {
+  selectBasketItems,
+  selectBasketTotal,
+} from "../../redux/features/basketSlice";
+import * as Icons from "react-native-heroicons/solid";
+import { urlFor } from "../../sanity";
+import CurrencyFormat from "react-currency-format";
+import { removeFromBasket } from "../../redux/features/basketSlice";
 
 const BasketScreen = () => {
-  const dispatch = useDispatch()
-  const navigation = useNavigation()
-  const restaurant = useSelector(selectRestaurant)
-  const items = useSelector(selectBasketItems)
-  const basketTotal = useSelector(selectBasketTotal)
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const restaurant = useSelector(selectRestaurant);
+  const items = useSelector(selectBasketItems);
+  const basketTotal = useSelector(selectBasketTotal);
 
-  const [groupedItemsInBasket, setGroupedItemsInBasket] = useState([])
+  const [groupedItemsInBasket, setGroupedItemsInBasket] = useState([]);
 
   useMemo(() => {
-    // if the values of the items didn't changed then it will not recompute the value
     const groupedItems = items.reduce((results, item) => {
-      ;(results[item.id] = results[item.id] || []).push(item)
-      return results
-    }, {})
+      (results[item.id] = results[item.id] || []).push(item);
+      return results;
+    }, {});
 
-    setGroupedItemsInBasket(groupedItems)
-  }, [items])
+    setGroupedItemsInBasket(groupedItems);
+  }, [items]);
 
   return (
-    <SafeAreaView className='pt-10 flex-1 bg-white'>
-      <View className='flex-1 bg-gray-100 '>
-        <View className='p-5 border-b border-[#00ccbb] bg-white shadow-xs'>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.header}>
           <View>
-            <Text className='text-lg font-bold text-center'> Basket</Text>
-            <Text className='text-center text-gray-400'>{restaurant.title}</Text>
+            <Text style={styles.titleText}>Basket</Text>
+            <Text style={styles.restaurantText}>{restaurant.title}</Text>
           </View>
-
-          <TouchableOpacity onPress={navigation.goBack} className='rounded-full bg-gray-100 absolute top-3 right-5'>
-            <Icons.XCircleIcon color='#00ccbb' size={50} />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.closeButton}
+          >
+            <Icons.XCircleIcon color="#00ccbb" size={50} />
           </TouchableOpacity>
         </View>
 
-        <View className='flex-row space-x-2 items-center px-4 py-3 bg-white my-5'>
+        <View style={styles.deliveryContainer}>
           <Image
-            source={{
-              uri: 'https://links.papareact.com/wru',
-            }}
-            className='h-7 w-7 bg-gray-300 p-4 rounded-full'
+            source={{ uri: "https://links.papareact.com/wru" }}
+            style={{ height: 35, width: 35, borderRadius: 999 }}
           />
-          <Text className='flex-1'>Deliver in 50 - 75 mints</Text>
+          <Text style={styles.deliveryText}>Deliver in 50 - 75 mints</Text>
           <TouchableOpacity>
-            <Text className='text-[#00ccbb]'>Change</Text>
+            <Text style={styles.changeText}>Change</Text>
           </TouchableOpacity>
         </View>
 
-        <ScrollView className='divide-y divide-gray-200'>
+        <ScrollView>
           {Object.entries(groupedItemsInBasket).map(([key, items]) => {
             return (
-              <View key={key} className='flex-row items-center space-x-3 bg-white py-2 px-5'>
-                <Text className='text-[#00ccbb]'>{items.length} x</Text>
+              <View key={key} style={styles.itemContainer}>
+                <Text style={styles.itemCountText}>{items.length} x</Text>
                 <Image
-                  source={{
-                    uri: urlFor(items[0]?.image).url(),
-                  }}
-                  className='h-12 w-12 rounded-full'
+                  source={{ uri: urlFor(items[0]?.image).url() }}
+                  style={styles.itemImage}
                 />
-                <Text className='flex-1'>{items[0]?.name}</Text>
+                <Text style={{ flex: 1 }}>{items[0]?.name}</Text>
                 <CurrencyFormat
                   value={items[0]?.price.toFixed(2)}
-                  displayType={'text'}
+                  displayType={"text"}
                   thousandSeparator={true}
-                  prefix={'£ '}
-                  renderText={value => <Text className='text-gray-400 mt-2'>{value}</Text>}
+                  prefix={"£ "}
+                  renderText={(value) => (
+                    <Text style={{ color: "#9CA3AF", marginTop: 5 }}>
+                      {value}
+                    </Text>
+                  )}
                 />
-
-                <TouchableOpacity>
-                  <Text className='text-[#00ccbb] text-xs' onPress={() => dispatch(removeFromBasket({ id: key }))}>
-                    Remove
-                  </Text>
+                <TouchableOpacity
+                  onPress={() => dispatch(removeFromBasket({ id: key }))}
+                >
+                  <Text style={styles.removeText}>Remove</Text>
                 </TouchableOpacity>
               </View>
-            )
+            );
           })}
-        </ScrollView>
 
-        <View className='p-5 bg-white mt-5 space-y-4'>
-          <View className='flex-row justify-between'>
-            <Text className='text-gray-400'>SubTotal</Text>
+          <View style={styles.subtotalContainer}>
+            <Text style={{ color: "#9CA3AF" }}>SubTotal</Text>
             <CurrencyFormat
               value={basketTotal.toFixed(2)}
-              displayType={'text'}
+              displayType={"text"}
               thousandSeparator={true}
-              prefix={'£ '}
-              renderText={value => <Text className='text-gray-400'>{value}</Text>}
+              prefix={"£ "}
+              renderText={(value) => (
+                <Text style={{ color: "#9CA3AF" }}>{value}</Text>
+              )}
             />
           </View>
-
-          <View className='flex-row justify-between'>
-            <Text className='text-gray-400'>Delivery Fee</Text>
+          <View style={styles.subtotalContainer}>
+            <Text style={{ color: "#9CA3AF" }}>Delivery Fee</Text>
             <CurrencyFormat
               value={(5.99).toFixed(2)}
-              displayType={'text'}
+              displayType={"text"}
               thousandSeparator={true}
-              prefix={'£ '}
-              renderText={value => <Text className='text-gray-400'>{value}</Text>}
+              prefix={"£ "}
+              renderText={(value) => (
+                <Text style={{ color: "#9CA3AF" }}>{value}</Text>
+              )}
             />
           </View>
-
-          <View className='flex-row justify-between'>
-            <Text className='text-gray-400'>Order Total</Text>
+          <View style={styles.subtotalContainer}>
+            <Text style={{ color: "#9CA3AF" }}>Order Total</Text>
             <CurrencyFormat
               value={(5.99 + basketTotal).toFixed(2)}
-              displayType={'text'}
+              displayType={"text"}
               thousandSeparator={true}
-              prefix={'£ '}
-              renderText={value => <Text className='text-black font-extrabold'>{value}</Text>}
+              prefix={"£ "}
+              renderText={(value) => (
+                <Text style={{ color: "#000", fontWeight: "bold" }}>
+                  {value}
+                </Text>
+              )}
             />
           </View>
+        </ScrollView>
 
-          <TouchableOpacity onPress={() => navigation.navigate('PreparingOrderScreen')} className='rounded-lg bg-[#00ccbb] p-4'>
-            <Text className='text-center text-white text-xl'>Place Order</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PreparingOrderScreen")}
+          style={styles.placeOrderButton}
+        >
+          <Text style={styles.placeOrderText}>Place Order</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default BasketScreen
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  header: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#00ccbb",
+    backgroundColor: "#FFF",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  titleText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  restaurantText: {
+    color: "#9CA3AF",
+    marginLeft: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 3,
+    right: 5,
+    backgroundColor: "#FFF",
+  },
+  deliveryContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: "#FFF",
+    marginBottom: 5,
+  },
+  deliveryText: {
+    flex: 1,
+    textAlign: "center",
+  },
+  changeText: {
+    color: "#00ccbb",
+  },
+  itemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: "#FFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  itemCountText: {
+    color: "#00ccbb",
+    marginRight: 10,
+  },
+  itemImage: { width: 60, height: 60, borderRadius: 999, marginRight: 10 },
+  removeText: {
+    color: "#00ccbb",
+    fontSize: 14,
+    marginLeft: 10,
+  },
+  subtotalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: "#FFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  placeOrderButton: {
+    borderRadius: 10,
+    backgroundColor: "#00ccbb",
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  placeOrderText: {
+    color: "#FFF",
+    fontSize: 18,
+    textAlign: "center",
+  },
+});
+
+export default BasketScreen;
