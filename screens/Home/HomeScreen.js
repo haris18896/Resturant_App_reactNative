@@ -1,25 +1,25 @@
-import React, { useLayoutEffect, useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { SafeAreaView, ScrollView, View, Text, ActivityIndicator } from 'react-native'
-import Header from '../../components/Header'
-import Categories from '../../components/categories/Categories'
-import FeaturedRow from '../../components/featuredRow/FeaturedRow'
-import sanityClient from '../../sanity'
+import React, { useLayoutEffect, useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView, ScrollView, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import Header from '../../components/Header';
+import Categories from '../../components/categories/Categories';
+import FeaturedRow from '../../components/featuredRow/FeaturedRow';
+import sanityClient from '../../sanity';
 
 const HomeScreen = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
-  const [featureCategories, setFeatureCategories] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [featureCategories, setFeatureCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
-    })
-  })
+    });
+  });
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     sanityClient
       .fetch(
         `
@@ -33,19 +33,19 @@ const HomeScreen = () => {
     `
       )
       .then(data => {
-        setFeatureCategories(data)
-        setLoading(false)
-      })
-  }, [])
+        setFeatureCategories(data);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <SafeAreaView className='pt-10 bg-white'>
+    <SafeAreaView style={styles.container}>
       <Header />
 
-      <ScrollView className='bg-gray-100' contentContainerStyle={{ paddingBottom: 135 }}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Categories />
         {loading ? (
-          <View className='flex-1 mt-10 justify-center items-center'>
+          <View style={styles.loaderContainer}>
             <ActivityIndicator size='large' color='#00ccbb' />
           </View>
         ) : (
@@ -60,7 +60,27 @@ const HomeScreen = () => {
         )}
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default HomeScreen
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 10,
+    backgroundColor: 'white',
+  },
+  scrollView: {
+    backgroundColor: 'gray',
+  },
+  contentContainer: {
+    backgroundColor: 'white',
+    paddingBottom: 135,
+  },
+  loaderContainer: {
+    flex: 1,
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default HomeScreen;

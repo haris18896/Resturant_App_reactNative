@@ -1,11 +1,11 @@
-import { useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { Image, TouchableOpacity, View, Text } from 'react-native'
-import * as Icons from 'react-native-heroicons/solid'
-import { urlFor } from '../../sanity'
+import React from 'react';
+import { Image, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import * as Icons from 'react-native-heroicons/solid';
+import { useNavigation } from '@react-navigation/native';
+import { urlFor } from '../../sanity';
 
 const RestaurantCard = ({ id, imgUrl, rating, title, genre, address, short_description, dishes, long, lat }) => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
     <TouchableOpacity
@@ -21,28 +21,84 @@ const RestaurantCard = ({ id, imgUrl, rating, title, genre, address, short_descr
           dishes,
           long,
           lat,
-        })
+        });
       }}
-      className='bg-white mr-3 drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] rounded-md w-64'
+      style={styles.cardContainer}
     >
-      <Image source={{ uri: urlFor(imgUrl).url() }} className='h-36 w-64 rounded-md' />
-      <View className='px-3 pb-4'>
-        <Text className='font-bold text-lg pt-2'>{title}</Text>
+      <Image source={{ uri: urlFor(imgUrl).url() }} style={styles.image} />
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{title}</Text>
 
-        <View className='flex-row items-center space-x-2'>
-          <Icons.StarIcon color='green' opacity={0.5} size={22} />
-          <Text className='text-xs text-gray-500'>
-            <Text className='text-green-500'>{rating}</Text> . {genre}
-          </Text>
-        </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.ratingContainer}>
+            <Icons.StarIcon color='green' opacity={0.5} size={22} />
+            <Text style={styles.ratingText}>{rating}</Text>
+            <Text style={{ color: 'gray' }}> {genre}</Text>
+          </View>
 
-        <View className='flex-row items-center space-x-2'>
-          <Icons.LocationMarkerIcon color='gray' opacity={0.5} size={22} />
-          <Text className='text-xs text-gray-500'>Nearby . {address}</Text>
+          <View style={styles.locationContainer}>
+            <Icons.LocationMarkerIcon color='gray' opacity={0.5} size={22} />
+            <Text style={styles.locationText}>Nearby . {address}</Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default RestaurantCard
+const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: '#f1f1f1',
+    marginRight: 15,
+    borderRadius: 10,
+    width: 250,
+    marginVertical: 5,
+  },
+  image: {
+    height: 150,
+    width: '100%',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  textContainer: {
+    padding: 10,
+    paddingBottom: 20,
+    flex: 1,
+    width: '100%',
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    paddingTop: 10,
+  },
+  infoContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingTop: 5,
+  },
+  ratingContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingText: {
+    fontSize: 14,
+    paddingLeft: 5,
+    color: 'green',
+  },
+  locationContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  locationText: {
+    flex: 1,
+    paddingLeft: 5,
+     fontSize: 14,
+    color: 'gray',
+  }
+});
+
+export default RestaurantCard;
